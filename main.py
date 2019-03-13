@@ -89,6 +89,14 @@ def train(model, trainloader, validloader):
         pLoss.append(avgloss)
         plotlc(pEpoch, pLoss)
 
+        # update lr
+        if avgloss > previous_loss:
+            lr = lr * opt.lr_decay
+            for para in optimizer.param_groups:
+                para['lr'] = lr
+            print("learning rate changes to ",lr)
+        previous_loss = avgloss
+
 
 
 def valid(model, validloader):

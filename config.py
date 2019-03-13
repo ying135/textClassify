@@ -12,10 +12,11 @@ class DefaultConfig(object):
     lr = 0.001
     weight_decay = 0e-5
     lr_decay = 0.5
-    print_inter = 20
+    print_inter = 50
     hidden_size = 256
 
-    voca_length = 33747
+    voca_length = 33748
+    use_embedvector = True
 
     use_cuda = torch.cuda.is_available()
     root = 'data'
