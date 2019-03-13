@@ -1,0 +1,7 @@
+__pycache__/*
+snapshot/*
+.idea/*
+amazon/*
+data/*
+*.png
+*.pyc
