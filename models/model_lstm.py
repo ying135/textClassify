@@ -29,10 +29,26 @@ class LSTM(nn.Module):
         self.fc = nn.Sequential(nn.Linear(hidden_size, hidden_size//2),
                                 nn.ReLU(),
                                 nn.Linear(hidden_size//2, C))
+        if self.opt.attention is not None:
+            self.attention = getattr(models, opt.attention)(hidden_size)
+            self.linear1 = nn.Linear(embed_dim, hidden_size)
 
     def forward(self, x):
         x = self.embed(x)   # (seq_len, batch, embed_dim)
+        embeds = x
         r_out, h_state = self.rnn(x)
         # (seq_len, batch, hidden_size) h/c (1, batch, hidden_size)
+        if self.opt.attention is not None:
+            outputs = []
+            for emb in embeds.split(1):
+                emb = self.linear1(emb)
+                outp = self.attention(emb, r_out.transpose(0, 1))
+                outputs += [outp]
+            outputs = torch.stack(outputs)  # (seq_len, batch, hidden_size)
+            output = outputs.permute(1, 2, 0)
+            output = F.max_pool1d(output, output.size(2)).squeeze(2)
+            output = self.fc(output)
+            return output
+
         output = self.fc(h_state[0].squeeze(0))
         return output

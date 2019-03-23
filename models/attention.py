@@ -18,7 +18,7 @@ class global_attention(nn.Module):
         weights = self.softmax(weights)
         c_t = torch.bmm(weights.unsqueeze(1), context).squeeze(1)   # (batch, hidden_size)
         output = self.tanh(self.linear_out(torch.cat([c_t, x], 1))) # (batch, hidden_size)
-        return output, weights
+        return output
 
 
 class dot(nn.Module):
