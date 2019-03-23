@@ -13,7 +13,6 @@ class m2odata(data.Dataset):
         self.tgtstrf = roots['tgtstrf']
         self.length = roots['length']
 
-
     def __getitem__(self, item):
         item = item + 1
         srcind = list(map(int, linecache.getline(self.srcindf, item).strip().split()))
@@ -27,6 +26,7 @@ class m2odata(data.Dataset):
     def __len__(self):
         return self.length
 
+
 # many2one padding
 def padding(data):
     srcind, tgtind, srcstr, tgtstr = zip(*data)
@@ -39,5 +39,5 @@ def padding(data):
 
     tgt_pad = torch.LongTensor(tgtind).squeeze(1)
 
-    return src_pad, tgt_pad, torch.Tensor(src_len).long(), None, srcstr, tgtstr
+    return src_pad.t(), tgt_pad, torch.Tensor(src_len).long(), None, srcstr, tgtstr
 

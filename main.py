@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+
 opt = config.DefaultConfig()
 
 # many2one version
@@ -39,6 +40,7 @@ def load_data(train):
         testloader = DataLoader(testset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_worker)
         return testloader, dict_src
 
+
 def plotlc(x, y, figname='learning_curve'):
     plt.plot(x, y)
     plt.title('learning curve')
@@ -46,6 +48,7 @@ def plotlc(x, y, figname='learning_curve'):
     plt.ylabel('loss')
     # plt.show()
     plt.savefig(figname)
+
 
 def train(model, trainloader, validloader):
     if opt.use_cuda:
@@ -74,7 +77,7 @@ def train(model, trainloader, validloader):
 
             pred = torch.max(score, 1)[1]
             accuracy = float((pred == target).sum())
-            accuracy = accuracy * 100 / input.size(0)
+            accuracy = accuracy * 100 / input.size(1)
 
             total_accuracy += accuracy
             loss_all += float(loss)
@@ -108,7 +111,7 @@ def test(model, testloader):
 
 
 def main():
-    model = models.textCnn(opt)
+    model = getattr(models, opt.model_name)(opt)
     if opt.load_model_path:
         model.load_state_dict(torch.load(opt.load_model_path))
         print("Load Success!", opt.load_model_path)
